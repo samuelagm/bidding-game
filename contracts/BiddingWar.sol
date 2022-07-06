@@ -34,7 +34,7 @@ contract BiddingWar is Ownable {
 
     modifier afterBidWar() {
         if (block.timestamp < _roundEndTime) {
-            revert activeBidRound("a bidding war is ongoig");
+            revert activeBidRound("a bidding war is ongoing");
         }
         _;
     }
@@ -107,6 +107,7 @@ contract BiddingWar is Ownable {
         (bool success, ) = roundInfo.winner.call{
             value: roundInfo.accumulatedBids
         }("");
+        console.log("withdraw",success);
         require(success, "unable to pay winner");
         emit CashOut(round, roundInfo.winner, roundInfo.accumulatedBids);
     }
@@ -129,7 +130,7 @@ contract BiddingWar is Ownable {
     } 
 
     function withdraw() public onlyOwner {
-        (bool success, ) = msg.sender.call{value: address(this).balance}("");
+        (bool success, ) = msg.sender.call{value: _accumulatedCommission}("");
         require(success, "unable to withdraw commissions");
     }
 }

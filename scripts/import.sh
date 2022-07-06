@@ -7,4 +7,4 @@ mkdir ./internal/contracts/BiddingWar &> /dev/null
 abigen --abi ../assets/BiddingWar.abi \
 --bin ../assets/BiddingWar.bin \
 --pkg contract \
---out ../internal/contracts/BiddingWar/biddingwar.go
+--out ../internal/contracts/biddingwar/biddingwar.go

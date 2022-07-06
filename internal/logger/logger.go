@@ -52,8 +52,6 @@ func Watch(ctx context.Context, config eventtypes.Config) (ch <-chan error, err 
 				client.Close()
 				errChan <- err
 			case vLog := <-logs:
-				// event := eventtypes.EscrowEvent{}
-				// err := contractAbi.UnpackIntoInterface(&event, "EscrowCreated", vLog.Data)
 				fmt.Println(vLog)
 				if err != nil {
 					log.Println("contract event unpacking:", err)
