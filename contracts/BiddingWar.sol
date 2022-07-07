@@ -1,8 +1,6 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract BiddingWar is Ownable {
@@ -134,8 +132,7 @@ contract BiddingWar is Ownable {
     }
 
     function gameIsRunning() public view returns (bool) {
-        if (block.timestamp <= _roundEndTime){
-            return true;
+        if (block.timestamp <= _roundEndTime) return true;
         return false;
     }
 

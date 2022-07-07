@@ -128,14 +128,6 @@ func getAuth(c *BiddingWarHelper) (*bind.TransactOpts, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// estimatedGas, err := client.EstimateGas(context.Background(), ethereum.CallMsg{
-	// 	To:   &c.ContractAddress,
-	// 	Data: []byte{0},
-	// })
-	// if err != nil {
-	// 	return nil, err
-	// }
 	gasPrice, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
 		return nil, err
