@@ -7,7 +7,7 @@ import { ethers, network } from "hardhat";
 
 async function main() {
     const bw = await ethers.getContractFactory("BiddingWar");
-    const bidwarInstance = bw.attach("0x712516e61C8B383dF4A63CFe83d7701Bce54B03e")
+    const bidwarInstance = bw.attach("0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6")
 
     //console.log(bidwarInstance)
     //await bidwarInstance.restart()

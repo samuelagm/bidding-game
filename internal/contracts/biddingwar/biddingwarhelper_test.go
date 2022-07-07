@@ -18,10 +18,10 @@ import (
 )
 
 type envconfig struct {
-	Host              string        `env:"HOST" envDefault:"wss://nodeapi.test.energi.network/ws"`
+	Host              string        `env:"HOST" envDefault:"https://nodeapi.test.energi.network/v1/jsonrpc"`
 	WSS_Host          string        `env:"WSS_HOST" envDefault:"wss://nodeapi.test.energi.network/ws"`
 	PrivateKey        string        `env:"PRIVATEKEY" envDefault:"ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"`
-	ContractAddress   string        `env:"CONTRACT" envDefault:"0x5C7c905B505f0Cf40Ab6600d05e677F717916F6B"`
+	ContractAddress   string        `env:"CONTRACT" envDefault:"0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6"`
 	GameCheckInterval time.Duration `env:"GAME_CHECK_INTERVAL" envDefault:"5m"`
 }
 
