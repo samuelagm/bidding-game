@@ -1,8 +1,6 @@
 #!/bin/bash
 
-#Import Smartcontracts into project as go
-
-mkdir ./internal/contracts/BiddingWar &> /dev/null
+#Import Smartcontracts into project as golang packages
 
 abigen --abi ../assets/BiddingWar.abi \
 --bin ../assets/BiddingWar.bin \
