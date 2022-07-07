@@ -27,7 +27,7 @@ This project contains a smart contract that implements the game described in #1,
 ### ENV
 `HOST=https://nodeapi.test.energi.network/v1/jsonrpc`  
 `WSS_HOST=wss://nodeapi.test.energi.network/ws`  
-`PRIVATEKEY=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`  
+`PRIVATE_KEY=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`  
 `CONTRACT=0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6`  
 `GAME_CHECK_INTERVAL=5m`  
 
