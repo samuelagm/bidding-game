@@ -136,9 +136,7 @@ contract BiddingWar is Ownable {
     function gameIsRunning() public view returns (bool) {
         if (block.timestamp <= _roundEndTime){
             return true;
-        }else{
-            return false;
-        }
+        return false;
     }
 
     function withdraw() public onlyOwner {
