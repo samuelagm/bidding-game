@@ -71,6 +71,7 @@ func TestBiddingWarHelper_GetCommissions(t *testing.T) {
 		ContractInstance *Contract
 		Client           *ethclient.Client
 		OwnerAddress     common.Address
+		ContractAddress  common.Address
 	}
 	tests := []struct {
 		name    string
@@ -85,6 +86,7 @@ func TestBiddingWarHelper_GetCommissions(t *testing.T) {
 				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
+				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
 				OwnerAddress:     ownerAddress,
 			},
 			want:    big.NewInt(0),
@@ -99,6 +101,7 @@ func TestBiddingWarHelper_GetCommissions(t *testing.T) {
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
+				ContractAddress:  tt.fields.ContractAddress,
 			}
 			got, err := c.GetCommissions()
 			if (err != nil) != tt.wantErr {
@@ -119,6 +122,7 @@ func TestBiddingWarHelper_GetCurrentRoundNumber(t *testing.T) {
 		ContractInstance *Contract
 		Client           *ethclient.Client
 		OwnerAddress     common.Address
+		ContractAddress  common.Address
 	}
 	tests := []struct {
 		name    string
@@ -133,6 +137,7 @@ func TestBiddingWarHelper_GetCurrentRoundNumber(t *testing.T) {
 				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
+				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
 				OwnerAddress:     ownerAddress,
 			},
 			want:    big.NewInt(0),
@@ -147,6 +152,7 @@ func TestBiddingWarHelper_GetCurrentRoundNumber(t *testing.T) {
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
+				ContractAddress:  tt.fields.ContractAddress,
 			}
 			got, err := c.GetCurrentRoundNumber()
 			if (err != nil) != tt.wantErr {
@@ -167,6 +173,7 @@ func TestBiddingWarHelper_GetLastBid(t *testing.T) {
 		ContractInstance *Contract
 		Client           *ethclient.Client
 		OwnerAddress     common.Address
+		ContractAddress  common.Address
 	}
 	tests := []struct {
 		name    string
@@ -181,6 +188,7 @@ func TestBiddingWarHelper_GetLastBid(t *testing.T) {
 				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
+				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
 				OwnerAddress:     ownerAddress,
 			},
 			want:    BiddingWarBidRound{},
@@ -195,6 +203,7 @@ func TestBiddingWarHelper_GetLastBid(t *testing.T) {
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
+				ContractAddress:  tt.fields.ContractAddress,
 			}
 			got, err := c.GetLastBid()
 			if (err != nil) != tt.wantErr {
@@ -215,6 +224,7 @@ func TestBiddingWarHelper_GetBidAt(t *testing.T) {
 		ContractInstance *Contract
 		Client           *ethclient.Client
 		OwnerAddress     common.Address
+		ContractAddress  common.Address
 	}
 	type args struct {
 		round int64
@@ -233,6 +243,7 @@ func TestBiddingWarHelper_GetBidAt(t *testing.T) {
 				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
+				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
 				OwnerAddress:     ownerAddress,
 			},
 			args: args{
@@ -250,6 +261,7 @@ func TestBiddingWarHelper_GetBidAt(t *testing.T) {
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
+				ContractAddress:  tt.fields.ContractAddress,
 			}
 			got, err := c.GetBidAt(tt.args.round)
 			if (err != nil) != tt.wantErr {
@@ -270,6 +282,7 @@ func TestBiddingWarHelper_GameIsRunning(t *testing.T) {
 		ContractInstance *Contract
 		Client           *ethclient.Client
 		OwnerAddress     common.Address
+		ContractAddress  common.Address
 	}
 	tests := []struct {
 		name    string
@@ -284,6 +297,7 @@ func TestBiddingWarHelper_GameIsRunning(t *testing.T) {
 				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
+				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
 				OwnerAddress:     ownerAddress,
 			},
 			want:    false,
@@ -298,6 +312,7 @@ func TestBiddingWarHelper_GameIsRunning(t *testing.T) {
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
+				ContractAddress:  tt.fields.ContractAddress,
 			}
 			got, err := c.GameIsRunning()
 			if (err != nil) != tt.wantErr {
@@ -318,6 +333,7 @@ func TestBiddingWarHelper_Withdraw(t *testing.T) {
 		ContractInstance *Contract
 		Client           *ethclient.Client
 		OwnerAddress     common.Address
+		ContractAddress  common.Address
 	}
 	tests := []struct {
 		name    string
@@ -332,6 +348,7 @@ func TestBiddingWarHelper_Withdraw(t *testing.T) {
 				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
+				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
 				OwnerAddress:     ownerAddress,
 			},
 			want:    &types.Transaction{},
@@ -346,6 +363,7 @@ func TestBiddingWarHelper_Withdraw(t *testing.T) {
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
+				ContractAddress:  tt.fields.ContractAddress,
 			}
 			got, err := c.Withdraw()
 			if (err != nil) != tt.wantErr {
@@ -366,6 +384,7 @@ func TestBiddingWarHelper_RestartGame(t *testing.T) {
 		ContractInstance *Contract
 		Client           *ethclient.Client
 		OwnerAddress     common.Address
+		ContractAddress  common.Address
 	}
 	tests := []struct {
 		name    string
@@ -380,6 +399,7 @@ func TestBiddingWarHelper_RestartGame(t *testing.T) {
 				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
+				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
 				OwnerAddress:     ownerAddress,
 			},
 			want:    &types.Transaction{},
@@ -394,6 +414,7 @@ func TestBiddingWarHelper_RestartGame(t *testing.T) {
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
+				ContractAddress:  tt.fields.ContractAddress,
 			}
 			got, err := c.RestartGame()
 			if (err != nil) != tt.wantErr {
@@ -414,6 +435,7 @@ func TestBiddingWarHelper_PayWinner(t *testing.T) {
 		ContractInstance *Contract
 		Client           *ethclient.Client
 		OwnerAddress     common.Address
+		ContractAddress  common.Address
 	}
 	type args struct {
 		round int64
@@ -432,6 +454,7 @@ func TestBiddingWarHelper_PayWinner(t *testing.T) {
 				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
+				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
 				OwnerAddress:     ownerAddress,
 			},
 			want:    &types.Transaction{},
@@ -446,6 +469,7 @@ func TestBiddingWarHelper_PayWinner(t *testing.T) {
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
+				ContractAddress:  tt.fields.ContractAddress,
 			}
 			got, err := c.PayWinner(tt.args.round)
 			if (err != nil) != tt.wantErr {

@@ -6,7 +6,6 @@ import (
 	"log"
 	"math/big"
 
-	ethereum "github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -23,6 +22,7 @@ type BiddingWarHelper struct {
 	PrivateKey       *ecdsa.PrivateKey
 	ContractInstance *Contract
 	Client           *ethclient.Client
+	ContractAddress  common.Address
 	OwnerAddress     common.Address
 }
 
@@ -47,6 +47,7 @@ func NewBiddingWarHelper(host string, privateKey *ecdsa.PrivateKey, address stri
 		PrivateKey:       privateKey,
 		ContractInstance: c,
 		Client:           client,
+		ContractAddress:  common.HexToAddress(address),
 		OwnerAddress:     fromAddress,
 	}
 
@@ -128,13 +129,13 @@ func getAuth(c *BiddingWarHelper) (*bind.TransactOpts, error) {
 		return nil, err
 	}
 
-	estimatedGas, err := client.EstimateGas(context.Background(), ethereum.CallMsg{
-		To:   &c.OwnerAddress,
-		Data: []byte{0},
-	})
-	if err != nil {
-		return nil, err
-	}
+	// estimatedGas, err := client.EstimateGas(context.Background(), ethereum.CallMsg{
+	// 	To:   &c.ContractAddress,
+	// 	Data: []byte{0},
+	// })
+	// if err != nil {
+	// 	return nil, err
+	// }
 	gasPrice, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
 		return nil, err
@@ -152,7 +153,7 @@ func getAuth(c *BiddingWarHelper) (*bind.TransactOpts, error) {
 
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)
-	auth.GasLimit = uint64(estimatedGas * 2)
+	auth.GasLimit = uint64(200000)
 	auth.GasPrice = gasPrice
 
 	return auth, nil
