@@ -3,16 +3,61 @@ package logger
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/jpillora/backoff"
 	"github.com/rs/zerolog/log"
 	contract "gitlab.com/energi/blockchain-challenge/internal/contracts/biddingwar"
 )
 
-func Watch(ctx context.Context,
+func LogEvents(ctx context.Context, wsshost string, contractAddress string) {
+
+	var watchCtx context.Context
+	var watchCancel context.CancelFunc
+	var watchErr <-chan error = nil
+	var err error = nil
+
+	watchCtx, watchCancel = context.WithCancel(ctx)
+	backoffControl := &backoff.Backoff{
+		Jitter: true,
+	}
+
+	var watchWrapper = func(localCtx context.Context) {
+		biddingWarEventHelper := contract.NewBiddingWarEventHelper(
+			wsshost,
+			contractAddress,
+		)
+		watchErr, err = watchAndLog(localCtx, biddingWarEventHelper)
+		if watchErr == nil && err != nil {
+			fmt.Println(watchErr, err.Error())
+			log.Fatal()
+		}
+	}
+
+	watchWrapper(watchCtx)
+
+	for {
+		select {
+		case watchErr := <-watchErr:
+			watchCancel()
+			reconnectIn := backoffControl.Duration()
+			fmt.Println(watchErr, ", reconnecting in ", reconnectIn)
+			time.Sleep(reconnectIn)
+			watchCtx, watchCancel = context.WithCancel(ctx)
+			watchWrapper(watchCtx)
+		case <-ctx.Done():
+			watchCancel()
+			return
+		}
+	}
+
+}
+
+func watchAndLog(ctx context.Context,
 	biddingwarContract *contract.BiddingWarHelper) (ch <-chan error, err error) {
+
 	client := biddingwarContract.Client
-	fmt.Println("watching events..")
 	watchOpt := &bind.WatchOpts{
 		Start:   nil,
 		Context: ctx,
@@ -37,6 +82,8 @@ func Watch(ctx context.Context,
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("waiting for events..")
 
 	errChan := make(chan error)
 	go func() {

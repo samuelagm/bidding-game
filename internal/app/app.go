@@ -12,7 +12,6 @@ import (
 
 	"github.com/caarlos0/env"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/jpillora/backoff"
 	contract "gitlab.com/energi/blockchain-challenge/internal/contracts/biddingwar"
 	"gitlab.com/energi/blockchain-challenge/internal/logger"
 	"gitlab.com/energi/blockchain-challenge/internal/manager"
@@ -48,15 +47,6 @@ func Run() {
 	signal.Notify(ch, os.Interrupt, syscall.SIGTERM)
 
 	ctx, cancelCTX := context.WithCancel(context.Background())
-	var watchCtx context.Context
-	var watchCancel context.CancelFunc
-
-	b := &backoff.Backoff{
-		Jitter: true,
-	}
-
-	var watchErr <-chan error = nil
-	var err error = nil
 
 	biddingWarHelper := contract.NewBiddingWarHelper(
 		cfg.Host,
@@ -64,42 +54,15 @@ func Run() {
 		cfg.ContractAddress,
 	)
 
-	watchCtx, watchCancel = context.WithCancel(ctx)
-
-	var watchWrapper = func(localCtx context.Context) {
-		biddingWarEventHelper := contract.NewBiddingWarEventHelper(
-			cfg.WSS_Host,
-			cfg.ContractAddress,
-		)
-		watchErr, err = logger.Watch(localCtx, biddingWarEventHelper)
-	}
-
-	watchWrapper(watchCtx)
-
-	if watchErr == nil && err != nil {
-		fmt.Println("unable to start blockchain watch")
-		log.Fatal(watchErr, err)
-	}
-
+	go logger.LogEvents(ctx, cfg.WSS_Host, cfg.ContractAddress)
 	go server.Serve(biddingWarHelper)
 	go manager.Manage(cfg.GameCheckInterval, biddingWarHelper)
 
 	for {
-		select {
-		case watchErr := <-watchErr:
-			watchCancel()
-			reconnectIn := b.Duration()
-			fmt.Println(watchErr, "reconnecting in ", reconnectIn)
-			time.Sleep(reconnectIn)
-			watchCtx, watchCancel = context.WithCancel(ctx)
-			watchWrapper(watchCtx)
-		case signal := <-ch:
-			fmt.Printf("\nGot signal:%s, exiting...\n", signal)
-			watchCancel()
-			cancelCTX()
-			time.Sleep(100 * time.Millisecond)
-			os.Exit(0)
-		}
+		signal := <-ch
+		fmt.Printf("\nGot signal:%s, exiting...\n", signal)
+		cancelCTX()
+		os.Exit(0)
 	}
 
 }
