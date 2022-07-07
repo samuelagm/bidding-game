@@ -1,11 +1,44 @@
-# Blockchain Challenge
+# Solution
+***
+This project contains a smart contract that implements game described in #1, it also contains the golang service that does the following:
+1. Serves endpoint for the following routes:
+   - `/getcommissions` returns accumulated commissions.
+   - `/getcurrentroundnumber` returns the latest bid round number.
+   - `/getbidat/:round` returns the winning bid at the specified round.
+   - `/getlastbid` returns the very latest bid.
+   - `/restartgame` restarts the game if time has elapsed.
+   - `/withdraw` allows the application withdraw commissions to it's wallet.
+   - `/paywiner/:round` pay winner at specified bid round.
+2. Watches for smart contract events and logs them in json format
+3. Tracks game state and restarts it when the game time elapses.
 
-Welcome the Energi Blockchain Challenge.
+### Assumptions
+1. Restarting the game and paying winners are mutually exclusive.
+2. The game is started automatically on contract deployment.
+3. Logging events mean writing smart contract events to stdout/console. 
 
-The instructions for the task are in #1.
+### Prerequisites
 
-To communicate with a reviewer, make sure to open a merge request and ask questions.
+1. Install npm, typescript and go dependencies
+   `npm install`
+   `go install`
 
-Your access to this repo will be rescinded in the _next 72 hours_.
+### ENV
+`
+HOST=https://nodeapi.test.energi.network/v1/jsonrpc
+WSS_HOST=wss://nodeapi.test.energi.network/ws
+PRIVATEKEY=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+CONTRACT=0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6
+GAME_CHECK_INTERVAL=5m
+`
 
-Good Luck!
+### Tests
+
+   - `npx hardhat test`
+   - `go test ./...`
+
+### Execution
+
+`go run main.go`
+
+
