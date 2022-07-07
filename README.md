@@ -1,6 +1,6 @@
 # Solution
 ***
-This project contains a smart contract that implements game described in #1, it also contains the golang service that does the following:
+This project contains a smart contract that implements the game described in #1, it also contains the golang service that does the following:
 1. Serves endpoint for the following routes:
    - `/getcommissions` returns accumulated commissions.
    - `/getcurrentroundnumber` returns the latest bid round number.
@@ -8,7 +8,7 @@ This project contains a smart contract that implements game described in #1, it 
    - `/getlastbid` returns the very latest bid.
    - `/restartgame` restarts the game if time has elapsed.
    - `/withdraw` allows the application withdraw commissions to it's wallet.
-   - `/paywiner/:round` pay winner at specified bid round.
+   - `/paywiner/:round` pays the specified bid round winner.
 2. Watches for smart contract events and logs them in json format
 3. Tracks game state and restarts it when the game time elapses.
 
@@ -19,7 +19,8 @@ This project contains a smart contract that implements game described in #1, it 
 
 ### Prerequisites
 
-1. Install npm, typescript and go dependencies
+1. Install npm, typescript and go dependencies  
+   
    `npm install`  
    `go install`
 
