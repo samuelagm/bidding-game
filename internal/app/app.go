@@ -45,10 +45,9 @@ func Run() {
 	go server.Serve(biddingWarHelper)
 	go manager.Manage(cfg.GameCheckInterval, biddingWarHelper)
 
-	for {
-		signal := <-ch
-		fmt.Printf("\nGot signal:%s, exiting...\n", signal)
-		cancelCTX()
-		os.Exit(0)
-	}
+	signal := <-ch
+
+	fmt.Printf("\nGot signal:%s, exiting...\n", signal)
+	cancelCTX()
+	os.Exit(0)
 }
