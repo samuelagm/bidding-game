@@ -9,7 +9,6 @@ import (
 
 //Helps to restart the bidding war game after it ends.
 func Manage(interval time.Duration, biddingWarHelper *contract.BiddingWarHelper) {
-
 	for range time.Tick(interval) {
 		running, _ := biddingWarHelper.GameIsRunning()
 		if !running {

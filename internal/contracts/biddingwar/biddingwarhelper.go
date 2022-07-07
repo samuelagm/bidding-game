@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"log"
 	"math/big"
+	"os"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -19,19 +20,25 @@ func init() {
 
 type BiddingWarHelper struct {
 	Host             string
-	PrivateKey       *ecdsa.PrivateKey
 	ContractInstance *Contract
 	Client           *ethclient.Client
 	ContractAddress  common.Address
 	OwnerAddress     common.Address
 }
 
-func NewBiddingWarHelper(host string, privateKey *ecdsa.PrivateKey, address string) *BiddingWarHelper {
+func NewBiddingWarHelper(host string, address string) *BiddingWarHelper {
 	client, err := ethclient.Dial(host)
 	if err != nil {
 		log.Fatalf("Failed to connect to the Ethereum client: %v", err)
 	}
+
+	privateKey, err := crypto.HexToECDSA(os.Getenv("PRIVATE_KEY"))
+	if err != nil {
+		log.Fatal("unable to find PRIVATE_KEY environmental variable")
+	}
+
 	publicKey := privateKey.Public()
+	privateKey = nil
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
 		log.Fatalf("error casting public key to ECDSA")
@@ -44,7 +51,6 @@ func NewBiddingWarHelper(host string, privateKey *ecdsa.PrivateKey, address stri
 	}
 	return &BiddingWarHelper{
 		Host:             host,
-		PrivateKey:       privateKey,
 		ContractInstance: c,
 		Client:           client,
 		ContractAddress:  common.HexToAddress(address),
@@ -138,10 +144,17 @@ func getAuth(c *BiddingWarHelper) (*bind.TransactOpts, error) {
 		return nil, err
 	}
 
-	auth, err := bind.NewKeyedTransactorWithChainID(c.PrivateKey, chainId)
+	privateKey, err := crypto.HexToECDSA(os.Getenv("PRIVATE_KEY"))
 	if err != nil {
 		return nil, err
 	}
+
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainId)
+	if err != nil {
+		return nil, err
+	}
+
+	privateKey = nil
 
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)

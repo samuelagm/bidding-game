@@ -27,5 +27,4 @@ func NewBiddingWarEventHelper(wsshost string, address string) *BiddingWarHelper 
 		ContractInstance: c,
 		Client:           client,
 	}
-
 }

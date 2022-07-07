@@ -12,7 +12,6 @@ import (
 )
 
 func LogEvents(ctx context.Context, wsshost string, contractAddress string) {
-
 	var watchCtx context.Context
 	var watchCancel context.CancelFunc
 	var watchErr <-chan error = nil
@@ -51,7 +50,6 @@ func LogEvents(ctx context.Context, wsshost string, contractAddress string) {
 			return
 		}
 	}
-
 }
 
 func watchAndLog(ctx context.Context,
@@ -126,5 +124,4 @@ func watchAndLog(ctx context.Context,
 	}()
 
 	return errChan, nil
-
 }

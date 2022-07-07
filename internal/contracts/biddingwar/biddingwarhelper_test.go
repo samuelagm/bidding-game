@@ -26,7 +26,6 @@ type envconfig struct {
 }
 
 var cfg envconfig
-var privateKey *ecdsa.PrivateKey
 var ownerAddress common.Address
 var biddingwarContract *Contract
 var client *ethclient.Client
@@ -38,15 +37,17 @@ func initVars() {
 		fmt.Printf("%+v\n", err)
 	}
 
-	privateKey, err = crypto.HexToECDSA(cfg.PrivateKey)
+	privateKey, err := crypto.HexToECDSA(os.Getenv("PRIVATE_KEY"))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("unable to find PRIVATE_KEY environmental variable")
 	}
+
 	client, err = ethclient.Dial(cfg.Host)
 	if err != nil {
 		log.Fatalf("Failed to connect to the Ethereum client: %v", err)
 	}
 	publicKey := privateKey.Public()
+	privateKey = nil
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
 		log.Fatalf("error casting public key to ECDSA")
@@ -67,7 +68,6 @@ func TestMain(m *testing.M) {
 func TestBiddingWarHelper_GetCommissions(t *testing.T) {
 	type fields struct {
 		Host             string
-		PrivateKey       *ecdsa.PrivateKey
 		ContractInstance *Contract
 		Client           *ethclient.Client
 		OwnerAddress     common.Address
@@ -83,7 +83,6 @@ func TestBiddingWarHelper_GetCommissions(t *testing.T) {
 			name: "Basic Test",
 			fields: fields{
 				Host:             cfg.Host,
-				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
 				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
@@ -97,7 +96,6 @@ func TestBiddingWarHelper_GetCommissions(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &BiddingWarHelper{
 				Host:             tt.fields.Host,
-				PrivateKey:       tt.fields.PrivateKey,
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
@@ -118,7 +116,6 @@ func TestBiddingWarHelper_GetCommissions(t *testing.T) {
 func TestBiddingWarHelper_GetCurrentRoundNumber(t *testing.T) {
 	type fields struct {
 		Host             string
-		PrivateKey       *ecdsa.PrivateKey
 		ContractInstance *Contract
 		Client           *ethclient.Client
 		OwnerAddress     common.Address
@@ -134,7 +131,6 @@ func TestBiddingWarHelper_GetCurrentRoundNumber(t *testing.T) {
 			name: "Basic Test",
 			fields: fields{
 				Host:             cfg.Host,
-				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
 				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
@@ -148,7 +144,6 @@ func TestBiddingWarHelper_GetCurrentRoundNumber(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &BiddingWarHelper{
 				Host:             tt.fields.Host,
-				PrivateKey:       tt.fields.PrivateKey,
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
@@ -185,7 +180,6 @@ func TestBiddingWarHelper_GetLastBid(t *testing.T) {
 			name: "Basic Test",
 			fields: fields{
 				Host:             cfg.Host,
-				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
 				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
@@ -199,7 +193,6 @@ func TestBiddingWarHelper_GetLastBid(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &BiddingWarHelper{
 				Host:             tt.fields.Host,
-				PrivateKey:       tt.fields.PrivateKey,
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
@@ -240,7 +233,6 @@ func TestBiddingWarHelper_GetBidAt(t *testing.T) {
 			name: "Basic Test",
 			fields: fields{
 				Host:             cfg.Host,
-				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
 				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
@@ -257,7 +249,6 @@ func TestBiddingWarHelper_GetBidAt(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &BiddingWarHelper{
 				Host:             tt.fields.Host,
-				PrivateKey:       tt.fields.PrivateKey,
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
@@ -294,7 +285,6 @@ func TestBiddingWarHelper_GameIsRunning(t *testing.T) {
 			name: "Basic Test",
 			fields: fields{
 				Host:             cfg.Host,
-				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
 				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
@@ -308,7 +298,6 @@ func TestBiddingWarHelper_GameIsRunning(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &BiddingWarHelper{
 				Host:             tt.fields.Host,
-				PrivateKey:       tt.fields.PrivateKey,
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
@@ -345,7 +334,6 @@ func TestBiddingWarHelper_Withdraw(t *testing.T) {
 			name: "Basic Test",
 			fields: fields{
 				Host:             cfg.Host,
-				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
 				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
@@ -359,7 +347,6 @@ func TestBiddingWarHelper_Withdraw(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &BiddingWarHelper{
 				Host:             tt.fields.Host,
-				PrivateKey:       tt.fields.PrivateKey,
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
@@ -396,7 +383,6 @@ func TestBiddingWarHelper_RestartGame(t *testing.T) {
 			name: "Basic Test",
 			fields: fields{
 				Host:             cfg.Host,
-				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
 				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
@@ -410,7 +396,6 @@ func TestBiddingWarHelper_RestartGame(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &BiddingWarHelper{
 				Host:             tt.fields.Host,
-				PrivateKey:       tt.fields.PrivateKey,
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
@@ -451,7 +436,6 @@ func TestBiddingWarHelper_PayWinner(t *testing.T) {
 			name: "Basic Test",
 			fields: fields{
 				Host:             cfg.Host,
-				PrivateKey:       privateKey,
 				ContractInstance: biddingwarContract,
 				Client:           client,
 				ContractAddress:  common.HexToAddress(cfg.ContractAddress),
@@ -465,7 +449,6 @@ func TestBiddingWarHelper_PayWinner(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &BiddingWarHelper{
 				Host:             tt.fields.Host,
-				PrivateKey:       tt.fields.PrivateKey,
 				ContractInstance: tt.fields.ContractInstance,
 				Client:           tt.fields.Client,
 				OwnerAddress:     tt.fields.OwnerAddress,
