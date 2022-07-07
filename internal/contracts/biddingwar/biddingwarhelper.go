@@ -6,6 +6,7 @@ import (
 	"log"
 	"math/big"
 
+	ethereum "github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -127,6 +128,13 @@ func getAuth(c *BiddingWarHelper) (*bind.TransactOpts, error) {
 		return nil, err
 	}
 
+	estimatedGas, err := client.EstimateGas(context.Background(), ethereum.CallMsg{
+		To:   &c.OwnerAddress,
+		Data: []byte{0},
+	})
+	if err != nil {
+		return nil, err
+	}
 	gasPrice, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
 		return nil, err
@@ -143,8 +151,8 @@ func getAuth(c *BiddingWarHelper) (*bind.TransactOpts, error) {
 	}
 
 	auth.Nonce = big.NewInt(int64(nonce))
-	auth.Value = big.NewInt(0)     // in wei
-	auth.GasLimit = uint64(300000) // in units
+	auth.Value = big.NewInt(0)
+	auth.GasLimit = uint64(estimatedGas * 2)
 	auth.GasPrice = gasPrice
 
 	return auth, nil
