@@ -34,7 +34,7 @@ This project contains a smart contract that implements the game described in #1,
 ### Tests
 
    - `npx hardhat test`
-   - `go test ./...`
+   - `PRIVATE_KEY=... go test ./...`
 
 ### Execution
 

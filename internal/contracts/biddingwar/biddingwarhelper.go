@@ -14,10 +14,6 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func init() {
-
-}
-
 type BiddingWarHelper struct {
 	Host             string
 	ContractInstance *Contract
@@ -56,7 +52,6 @@ func NewBiddingWarHelper(host string, address string) *BiddingWarHelper {
 		ContractAddress:  common.HexToAddress(address),
 		OwnerAddress:     fromAddress,
 	}
-
 }
 
 func (c *BiddingWarHelper) GetCommissions() (*big.Int, error) {
