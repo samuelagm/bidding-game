@@ -25,7 +25,7 @@ type BiddingWarHelper struct {
 	OwnerAddress     common.Address
 }
 
-func NewBiddingWarHelper(host string, privateKey *ecdsa.PrivateKey, address string) BiddingWarHelper {
+func NewBiddingWarHelper(host string, privateKey *ecdsa.PrivateKey, address string) *BiddingWarHelper {
 	client, err := ethclient.Dial(host)
 	if err != nil {
 		log.Fatalf("Failed to connect to the Ethereum client: %v", err)
@@ -41,13 +41,14 @@ func NewBiddingWarHelper(host string, privateKey *ecdsa.PrivateKey, address stri
 	if err != nil {
 		log.Fatalf("Failed to connect to the Ethereum client: %v", err)
 	}
-	return BiddingWarHelper{
+	return &BiddingWarHelper{
 		Host:             host,
 		PrivateKey:       privateKey,
 		ContractInstance: c,
 		Client:           client,
 		OwnerAddress:     fromAddress,
 	}
+
 }
 
 func (c *BiddingWarHelper) GetCommissions() (*big.Int, error) {
@@ -84,6 +85,15 @@ func (c *BiddingWarHelper) GetBidAt(round int64) (BiddingWarBidRound, error) {
 		Context: context.Background(),
 	}
 	return c.ContractInstance.GetBidAtRound(&opts, big.NewInt(round))
+}
+
+func (c *BiddingWarHelper) GameIsRunning() (bool, error) {
+	opts := bind.CallOpts{
+		Pending: false,
+		From:    c.OwnerAddress,
+		Context: context.Background(),
+	}
+	return c.ContractInstance.GameIsRunning(&opts)
 }
 
 func (c *BiddingWarHelper) Withdraw() (*types.Transaction, error) {

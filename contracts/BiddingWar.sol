@@ -16,7 +16,7 @@ contract BiddingWar is Ownable {
 
     error activeBidRound(string message);
     event NewBidRound(uint256 round, uint256 expiry);
-    event PotentialWinner(
+    event NewBid(
         uint256 round,
         address bidder,
         uint256 bidAmount,
@@ -33,7 +33,7 @@ contract BiddingWar is Ownable {
     mapping(uint256 => BidRound) private _winners;
 
     modifier afterBidWar() {
-        if (block.timestamp < _roundEndTime) {
+        if (block.timestamp <= _roundEndTime) {
             revert activeBidRound("a bidding war is ongoing");
         }
         _;
@@ -43,11 +43,12 @@ contract BiddingWar is Ownable {
         _step = 0;
         _round = 0;
         _roundEndTime = block.timestamp + 60 minutes;
+        _accumulatedCommission = 0;
         emit NewBidRound(_round, _roundEndTime);
     }
 
     function bid() public payable {
-        require(block.timestamp < _roundEndTime, "bid round has ended");
+        require(block.timestamp <= _roundEndTime, "bid round has ended");
         require(msg.value > 0, "invalid bid");
 
         if (_step == 0) {
@@ -86,7 +87,7 @@ contract BiddingWar is Ownable {
 
     function announce() internal {
         _roundEndTime += 10 minutes;
-        emit PotentialWinner(
+        emit NewBid(
             _round,
             _currentWinner,
             _winningBid,
@@ -102,32 +103,43 @@ contract BiddingWar is Ownable {
 
     function payWinner(uint256 round) public onlyOwner afterBidWar {
         BidRound memory roundInfo = _winners[round];
-        require(roundInfo.accumulatedBids > 0,"winner already paid");
+        require(roundInfo.accumulatedBids > 0, "winner already paid");
         _winners[round].accumulatedBids = 0;
         (bool success, ) = roundInfo.winner.call{
             value: roundInfo.accumulatedBids
         }("");
-        console.log("withdraw",success);
         require(success, "unable to pay winner");
         emit CashOut(round, roundInfo.winner, roundInfo.accumulatedBids);
     }
 
-    function getCurrentRoundNumber() public view returns (uint)  {
+    function getCurrentRoundNumber() public view returns (uint256) {
         return _round;
-    } 
+    }
 
-    function getLastBid() public view returns (BidRound memory)  {
+    function getLastBid() public view returns (BidRound memory) {
         return _winners[_round];
-    } 
+    }
 
-    function getBidAtRound(uint round) public view returns (BidRound memory)  {
-        require(round > 0 && round <= _round, "invalid round");
+    function getBidAtRound(uint256 round)
+        public
+        view
+        returns (BidRound memory)
+    {
+        require(round <= _round, "invalid round");
         return _winners[round];
-    } 
+    }
 
-    function getCommissions() public view returns (uint)  {
+    function getCommissions() public view returns (uint256) {
         return _accumulatedCommission;
-    } 
+    }
+
+    function gameIsRunning() public view returns (bool) {
+        if (block.timestamp <= _roundEndTime){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     function withdraw() public onlyOwner {
         (bool success, ) = msg.sender.call{value: _accumulatedCommission}("");

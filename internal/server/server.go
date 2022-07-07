@@ -1,21 +1,14 @@
 package server
 
 import (
-	"log"
 	"strconv"
 
-	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/gin-gonic/gin"
 
 	contract "gitlab.com/energi/blockchain-challenge/internal/contracts/biddingwar"
 )
 
-func Serve(contractAddress string, privateKeyString string) {
-
-	privateKey, err := crypto.HexToECDSA(privateKeyString)
-	if err != nil {
-		log.Fatal(err)
-	}
+func Serve(biddingwarContract *contract.BiddingWarHelper) {
 
 	r := gin.Default()
 	r.GET("/", func(c *gin.Context) {
@@ -24,17 +17,11 @@ func Serve(contractAddress string, privateKeyString string) {
 		})
 	})
 
-	biddingWarHelper := contract.NewBiddingWarHelper(
-		"https://nodeapi.test.energi.network/v1/jsonrpc",
-		privateKey,
-		contractAddress,
-	)
-
 	v1 := r.Group("/v1")
 	{
 		v1.GET("/getcommissions", func(c *gin.Context) {
 
-			amount, err := biddingWarHelper.GetCommissions()
+			amount, err := biddingwarContract.GetCommissions()
 			if err != nil {
 				c.JSON(500, gin.H{
 					"error": err.Error(),
@@ -48,7 +35,7 @@ func Serve(contractAddress string, privateKeyString string) {
 		})
 
 		v1.GET("/getcurrentroundnumber", func(c *gin.Context) {
-			roundNumber, err := biddingWarHelper.GetCurrentRoundNumber()
+			roundNumber, err := biddingwarContract.GetCurrentRoundNumber()
 			if err != nil {
 				c.JSON(500, gin.H{
 					"error": err.Error(),
@@ -71,7 +58,7 @@ func Serve(contractAddress string, privateKeyString string) {
 				})
 				return
 			}
-			bidround, err := biddingWarHelper.GetBidAt(rountInt)
+			bidround, err := biddingwarContract.GetBidAt(rountInt)
 			if err != nil {
 				c.JSON(500, gin.H{
 					"error": err.Error(),
@@ -82,7 +69,7 @@ func Serve(contractAddress string, privateKeyString string) {
 		})
 
 		v1.GET("/getlastbid", func(c *gin.Context) {
-			bidround, err := biddingWarHelper.GetLastBid()
+			bidround, err := biddingwarContract.GetLastBid()
 			if err != nil {
 				c.JSON(500, gin.H{
 					"error": err.Error(),
@@ -94,7 +81,7 @@ func Serve(contractAddress string, privateKeyString string) {
 
 		v1.GET("/restartgame", func(c *gin.Context) {
 
-			tx, err := biddingWarHelper.RestartGame()
+			tx, err := biddingwarContract.RestartGame()
 			if err != nil {
 				c.JSON(500, gin.H{
 					"error": err.Error(),
@@ -109,7 +96,7 @@ func Serve(contractAddress string, privateKeyString string) {
 
 		v1.GET("/withdraw", func(c *gin.Context) {
 
-			tx, err := biddingWarHelper.Withdraw()
+			tx, err := biddingwarContract.Withdraw()
 			if err != nil {
 				c.JSON(500, gin.H{
 					"error": err.Error(),
@@ -133,7 +120,7 @@ func Serve(contractAddress string, privateKeyString string) {
 				})
 				return
 			}
-			tx, err := biddingWarHelper.PayWinner(rountInt)
+			tx, err := biddingwarContract.PayWinner(rountInt)
 			if err != nil {
 				c.JSON(500, gin.H{
 					"error": err.Error(),
