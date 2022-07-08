@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 
-import { HardhatUserConfig, task } from "hardhat/config";
+import { HardhatUserConfig } from "hardhat/config";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
@@ -20,12 +20,14 @@ const config: HardhatUserConfig = {
     ganache: {
       url: "http://localhost:8545",
       accounts: "remote",
-      chainId: 31337
+      chainId: 31337,
     },
     energi: {
       url: process.env.HOST || "https://nodeapi.test.energi.network/v1/jsonrpc",
-      accounts:["ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"]
-    }
+      accounts: [
+        "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+      ],
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

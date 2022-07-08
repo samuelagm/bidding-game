@@ -34,5 +34,8 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.7.0"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .ts"
   }
 }
