@@ -1,6 +1,6 @@
 # Solution
 ***
-This project contains a smart contract that implements the game described in #1, it also contains the golang service that does the following:
+This project contains a smart contract that implements a bidding game, it also contains the golang service that does the following:
 1. Serves endpoint for the following routes:
    - `/getcommissions` returns accumulated commissions.
    - `/getcurrentroundnumber` returns the latest bid round number.
@@ -12,11 +12,6 @@ This project contains a smart contract that implements the game described in #1,
 2. Watches for smart contract events and logs them in json format
 3. Tracks game state and restarts it when the game time elapses.
 
-### Assumptions
-1. Restarting the game and paying winners are mutually exclusive.
-2. The game is started automatically on contract deployment.
-3. Logging events mean writing smart contract events to stdout/console. 
-
 ### Prerequisites
 
 1. Install npm, typescript and go dependencies  
@@ -27,8 +22,8 @@ This project contains a smart contract that implements the game described in #1,
 ### ENV
 `HOST=https://nodeapi.test.energi.network/v1/jsonrpc`  
 `WSS_HOST=wss://nodeapi.test.energi.network/ws`  
-`PRIVATE_KEY=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`  
-`CONTRACT=0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6`  
+`PRIVATE_KEY=...`  
+`CONTRACT=...`  
 `GAME_CHECK_INTERVAL=5m`  
 
 ### Tests
