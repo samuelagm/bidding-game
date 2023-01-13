@@ -1,4 +1,4 @@
-# Solution
+# Bidding Game
 ***
 This project contains a smart contract that implements a bidding game, it also contains the golang service that does the following:
 1. Serves endpoint for the following routes:
